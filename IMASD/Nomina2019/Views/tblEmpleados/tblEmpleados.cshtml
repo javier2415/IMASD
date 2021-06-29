@@ -1,0 +1,64 @@
+﻿@model Nomina2019.Models.ViewModels.tblEmpleadoswithList
+@{
+    ViewBag.Title = "tblEmpleados";
+}
+
+<h2>Empleados</h2>
+
+<div class="row" style="text-align:right; padding:5px;">
+    <a href="~/tblEmpleados/Nuevo" class="btn btn-primary">Registrar Nuevo Empleado</a>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm("Index", "tblEmpleados", FormMethod.Get))
+        {
+            <label>SELECCIONE UN DEPARTAMENTO</label>
+            @Html.DropDownListFor(f => f.iIdDepartamento, Model.lstDepartamentos, "Sin Filtro")
+
+            <label>SELECCIONE UN PERIODO DE PAGO</label>
+            @Html.DropDownListFor(f => f.iIdPeriodoPago, Model.lstPeriodosPago, "Sin Filtro")
+            <input type="submit" value="Buscar" />
+        }
+        <br />
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Departamento</th>
+                <th>Período de pago</th>
+                <th>Sueldo Diario</th>
+                <th>Sueldo Por Período</th>
+                <th>Fecha de Creación</th>
+                <th>Fecha de Modificación</th>
+                <th></th>
+            </tr>
+            @foreach (var _empleado in Model.lsttblEmpleados)
+            {
+                <tr>
+                    <td>@_empleado.iIdEmpleado</td>
+                    <td>@string.Format("{0} {1} {2}", _empleado.Padron.cNombre, _empleado.Padron.cApellido1, _empleado.Padron.cApellido2)</td>
+                    <td>@_empleado.Departamento.cNombreDepartamento </td>
+                    <td>@_empleado.PeriodoPago.cNombrePeriodo </td>
+                    <td>@_empleado.dSueldoDiario </td>
+                    <td>@string.Format("$ {0}", (_empleado.dSueldoDiario * _empleado.PeriodoPago.iDiasxPeriodo))</td>
+                    <td>@string.Format("{0}",_empleado.dtCreacion.ToShortDateString())</td>
+                    <td>@string.Format("{0}",@_empleado.dtModificacion.ToShortDateString())</td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="~/tblEmpleados/Editar/@_empleado.iIdEmpleado" class="btn btn-default">Editar</a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="~/tblEmpleados/Eliminar/@_empleado.iIdEmpleado" class="btn btn-danger">Eliminar</a>
+                            </div>
+                        </div>
+                        
+                       
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>

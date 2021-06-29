@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BDNOMINA2019Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblDepartamentos">
+          <Key>
+            <PropertyRef Name="iIdDepartamento" />
+          </Key>
+          <Property Name="iIdDepartamento" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cNombreDepartamento" Type="varchar" MaxLength="255" />
+          <Property Name="dtCreacion" Type="datetime" />
+          <Property Name="dtModificacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblEmpleados">
+          <Key>
+            <PropertyRef Name="iIdEmpleado" />
+          </Key>
+          <Property Name="iIdEmpleado" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="iIdPadron" Type="int" />
+          <Property Name="iIdPeriodoPago" Type="int" />
+          <Property Name="iIdDepartamento" Type="int" />
+          <Property Name="lActivo" Type="bit" />
+          <Property Name="dtCreacion" Type="datetime" />
+          <Property Name="dtModificacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblPadronPersonas">
+          <Key>
+            <PropertyRef Name="iIdPadron" />
+          </Key>
+          <Property Name="iIdPadron" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cNombre" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="cApellido1" Type="varchar" MaxLength="255" />
+          <Property Name="cApellido2" Type="varchar" MaxLength="255" />
+          <Property Name="cDireccion" Type="varchar" MaxLength="255" />
+          <Property Name="cTelefono" Type="varchar" MaxLength="255" />
+          <Property Name="dtCreacion" Type="datetime" />
+          <Property Name="dtModificacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblPeriodosPago">
+          <Key>
+            <PropertyRef Name="iIdPeriodoPago" />
+          </Key>
+          <Property Name="iIdPeriodoPago" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cNombrePeriodo" Type="varchar" MaxLength="255" />
+          <Property Name="iDiasxPeriodo" Type="int" />
+          <Property Name="dtCreacion" Type="datetime" />
+          <Property Name="dtModificacion" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblTabuladorSueldo">
+          <Key>
+            <PropertyRef Name="iIdTabuladorSueldo" />
+          </Key>
+          <Property Name="iIdTabuladorSueldo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="iIdEmpleado" Type="int" />
+          <Property Name="dSueldoDiario" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="lActivo" Type="bit" />
+          <Property Name="dtCreacion" Type="datetime" />
+          <Property Name="dtModificacion" Type="datetime" />
+        </EntityType>
+        <Association Name="fk_Departamento">
+          <End Role="tblDepartamentos" Type="Self.tblDepartamentos" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblDepartamentos">
+              <PropertyRef Name="iIdDepartamento" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdDepartamento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Empleado">
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="0..1" />
+          <End Role="tblTabuladorSueldo" Type="Self.tblTabuladorSueldo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblEmpleados">
+              <PropertyRef Name="iIdEmpleado" />
+            </Principal>
+            <Dependent Role="tblTabuladorSueldo">
+              <PropertyRef Name="iIdEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Padron">
+          <End Role="tblPadronPersonas" Type="Self.tblPadronPersonas" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPadronPersonas">
+              <PropertyRef Name="iIdPadron" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdPadron" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PeriodoPago">
+          <End Role="tblPeriodosPago" Type="Self.tblPeriodosPago" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPeriodosPago">
+              <PropertyRef Name="iIdPeriodoPago" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdPeriodoPago" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="empleados_crud" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+          <Parameter Name="IdPadron" Type="int" Mode="In" />
+          <Parameter Name="cNombre" Type="varchar(max)" Mode="In" />
+          <Parameter Name="cApellido1" Type="varchar(max)" Mode="In" />
+          <Parameter Name="cApellido2" Type="varchar(max)" Mode="In" />
+          <Parameter Name="cDireccion" Type="varchar(max)" Mode="In" />
+          <Parameter Name="cTelefono" Type="varchar(max)" Mode="In" />
+          <Parameter Name="IdPeriodoPago" Type="int" Mode="In" />
+          <Parameter Name="IdDepartamento" Type="int" Mode="In" />
+          <Parameter Name="dSueldoDiario" Type="decimal" Mode="In" />
+          <Parameter Name="Validar" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="BDNOMINA2019ModelStoreContainer">
+          <EntitySet Name="tblDepartamentos" EntityType="Self.tblDepartamentos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblEmpleados" EntityType="Self.tblEmpleados" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblPadronPersonas" EntityType="Self.tblPadronPersonas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblPeriodosPago" EntityType="Self.tblPeriodosPago" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblTabuladorSueldo" EntityType="Self.tblTabuladorSueldo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_Departamento" Association="Self.fk_Departamento">
+            <End Role="tblDepartamentos" EntitySet="tblDepartamentos" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Empleado" Association="Self.fk_Empleado">
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+            <End Role="tblTabuladorSueldo" EntitySet="tblTabuladorSueldo" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Padron" Association="Self.fk_Padron">
+            <End Role="tblPadronPersonas" EntitySet="tblPadronPersonas" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PeriodoPago" Association="Self.fk_PeriodoPago">
+            <End Role="tblPeriodosPago" EntitySet="tblPeriodosPago" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BDNOMINA2019Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblDepartamentos">
+          <Key>
+            <PropertyRef Name="iIdDepartamento" />
+          </Key>
+          <Property Name="iIdDepartamento" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cNombreDepartamento" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="dtCreacion" Type="DateTime" Precision="3" />
+          <Property Name="dtModificacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tblEmpleados" Relationship="Self.fk_Departamento" FromRole="tblDepartamentos" ToRole="tblEmpleados" />
+        </EntityType>
+        <EntityType Name="tblEmpleados">
+          <Key>
+            <PropertyRef Name="iIdEmpleado" />
+          </Key>
+          <Property Name="iIdEmpleado" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="iIdPadron" Type="Int32" />
+          <Property Name="iIdPeriodoPago" Type="Int32" />
+          <Property Name="iIdDepartamento" Type="Int32" />
+          <Property Name="lActivo" Type="Boolean" />
+          <Property Name="dtCreacion" Type="DateTime" Precision="3" />
+          <Property Name="dtModificacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tblDepartamentos" Relationship="Self.fk_Departamento" FromRole="tblEmpleados" ToRole="tblDepartamentos" />
+          <NavigationProperty Name="tblTabuladorSueldo" Relationship="Self.fk_Empleado" FromRole="tblEmpleados" ToRole="tblTabuladorSueldo" />
+          <NavigationProperty Name="tblPadronPersonas" Relationship="Self.fk_Padron" FromRole="tblEmpleados" ToRole="tblPadronPersonas" />
+          <NavigationProperty Name="tblPeriodosPago" Relationship="Self.fk_PeriodoPago" FromRole="tblEmpleados" ToRole="tblPeriodosPago" />
+        </EntityType>
+        <EntityType Name="tblPadronPersonas">
+          <Key>
+            <PropertyRef Name="iIdPadron" />
+          </Key>
+          <Property Name="iIdPadron" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cNombre" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="cApellido1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="cApellido2" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="cDireccion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="cTelefono" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="dtCreacion" Type="DateTime" Precision="3" />
+          <Property Name="dtModificacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tblEmpleados" Relationship="Self.fk_Padron" FromRole="tblPadronPersonas" ToRole="tblEmpleados" />
+        </EntityType>
+        <EntityType Name="tblPeriodosPago">
+          <Key>
+            <PropertyRef Name="iIdPeriodoPago" />
+          </Key>
+          <Property Name="iIdPeriodoPago" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cNombrePeriodo" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="iDiasxPeriodo" Type="Int32" />
+          <Property Name="dtCreacion" Type="DateTime" Precision="3" />
+          <Property Name="dtModificacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tblEmpleados" Relationship="Self.fk_PeriodoPago" FromRole="tblPeriodosPago" ToRole="tblEmpleados" />
+        </EntityType>
+        <EntityType Name="tblTabuladorSueldo">
+          <Key>
+            <PropertyRef Name="iIdTabuladorSueldo" />
+          </Key>
+          <Property Name="iIdTabuladorSueldo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="iIdEmpleado" Type="Int32" />
+          <Property Name="dSueldoDiario" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="lActivo" Type="Boolean" />
+          <Property Name="dtCreacion" Type="DateTime" Precision="3" />
+          <Property Name="dtModificacion" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tblEmpleados" Relationship="Self.fk_Empleado" FromRole="tblTabuladorSueldo" ToRole="tblEmpleados" />
+        </EntityType>
+        <Association Name="fk_Departamento">
+          <End Role="tblDepartamentos" Type="Self.tblDepartamentos" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblDepartamentos">
+              <PropertyRef Name="iIdDepartamento" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdDepartamento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Empleado">
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="0..1" />
+          <End Role="tblTabuladorSueldo" Type="Self.tblTabuladorSueldo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblEmpleados">
+              <PropertyRef Name="iIdEmpleado" />
+            </Principal>
+            <Dependent Role="tblTabuladorSueldo">
+              <PropertyRef Name="iIdEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Padron">
+          <End Role="tblPadronPersonas" Type="Self.tblPadronPersonas" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPadronPersonas">
+              <PropertyRef Name="iIdPadron" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdPadron" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PeriodoPago">
+          <End Role="tblPeriodosPago" Type="Self.tblPeriodosPago" Multiplicity="0..1" />
+          <End Role="tblEmpleados" Type="Self.tblEmpleados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblPeriodosPago">
+              <PropertyRef Name="iIdPeriodoPago" />
+            </Principal>
+            <Dependent Role="tblEmpleados">
+              <PropertyRef Name="iIdPeriodoPago" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BDNOMINA2019Entities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblDepartamentos" EntityType="Self.tblDepartamentos" />
+          <EntitySet Name="tblEmpleados" EntityType="Self.tblEmpleados" />
+          <EntitySet Name="tblPadronPersonas" EntityType="Self.tblPadronPersonas" />
+          <EntitySet Name="tblPeriodosPago" EntityType="Self.tblPeriodosPago" />
+          <EntitySet Name="tblTabuladorSueldo" EntityType="Self.tblTabuladorSueldo" />
+          <AssociationSet Name="fk_Departamento" Association="Self.fk_Departamento">
+            <End Role="tblDepartamentos" EntitySet="tblDepartamentos" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Empleado" Association="Self.fk_Empleado">
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+            <End Role="tblTabuladorSueldo" EntitySet="tblTabuladorSueldo" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Padron" Association="Self.fk_Padron">
+            <End Role="tblPadronPersonas" EntitySet="tblPadronPersonas" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PeriodoPago" Association="Self.fk_PeriodoPago">
+            <End Role="tblPeriodosPago" EntitySet="tblPeriodosPago" />
+            <End Role="tblEmpleados" EntitySet="tblEmpleados" />
+          </AssociationSet>
+          <FunctionImport Name="empleados_crud" ReturnType="Collection(Int32)">
+            <Parameter Name="Id" Mode="In" Type="Int32" />
+            <Parameter Name="IdPadron" Mode="In" Type="Int32" />
+            <Parameter Name="cNombre" Mode="In" Type="String" />
+            <Parameter Name="cApellido1" Mode="In" Type="String" />
+            <Parameter Name="cApellido2" Mode="In" Type="String" />
+            <Parameter Name="cDireccion" Mode="In" Type="String" />
+            <Parameter Name="cTelefono" Mode="In" Type="String" />
+            <Parameter Name="IdPeriodoPago" Mode="In" Type="Int32" />
+            <Parameter Name="IdDepartamento" Mode="In" Type="Int32" />
+            <Parameter Name="dSueldoDiario" Mode="In" Type="Decimal" />
+            <Parameter Name="Validar" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BDNOMINA2019ModelStoreContainer" CdmEntityContainer="BDNOMINA2019Entities1">
+          <EntitySetMapping Name="tblDepartamentos">
+            <EntityTypeMapping TypeName="BDNOMINA2019Model.tblDepartamentos">
+              <MappingFragment StoreEntitySet="tblDepartamentos">
+                <ScalarProperty Name="iIdDepartamento" ColumnName="iIdDepartamento" />
+                <ScalarProperty Name="cNombreDepartamento" ColumnName="cNombreDepartamento" />
+                <ScalarProperty Name="dtCreacion" ColumnName="dtCreacion" />
+                <ScalarProperty Name="dtModificacion" ColumnName="dtModificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblEmpleados">
+            <EntityTypeMapping TypeName="BDNOMINA2019Model.tblEmpleados">
+              <MappingFragment StoreEntitySet="tblEmpleados">
+                <ScalarProperty Name="iIdEmpleado" ColumnName="iIdEmpleado" />
+                <ScalarProperty Name="iIdPadron" ColumnName="iIdPadron" />
+                <ScalarProperty Name="iIdPeriodoPago" ColumnName="iIdPeriodoPago" />
+                <ScalarProperty Name="iIdDepartamento" ColumnName="iIdDepartamento" />
+                <ScalarProperty Name="lActivo" ColumnName="lActivo" />
+                <ScalarProperty Name="dtCreacion" ColumnName="dtCreacion" />
+                <ScalarProperty Name="dtModificacion" ColumnName="dtModificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblPadronPersonas">
+            <EntityTypeMapping TypeName="BDNOMINA2019Model.tblPadronPersonas">
+              <MappingFragment StoreEntitySet="tblPadronPersonas">
+                <ScalarProperty Name="iIdPadron" ColumnName="iIdPadron" />
+                <ScalarProperty Name="cNombre" ColumnName="cNombre" />
+                <ScalarProperty Name="cApellido1" ColumnName="cApellido1" />
+                <ScalarProperty Name="cApellido2" ColumnName="cApellido2" />
+                <ScalarProperty Name="cDireccion" ColumnName="cDireccion" />
+                <ScalarProperty Name="cTelefono" ColumnName="cTelefono" />
+                <ScalarProperty Name="dtCreacion" ColumnName="dtCreacion" />
+                <ScalarProperty Name="dtModificacion" ColumnName="dtModificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblPeriodosPago">
+            <EntityTypeMapping TypeName="BDNOMINA2019Model.tblPeriodosPago">
+              <MappingFragment StoreEntitySet="tblPeriodosPago">
+                <ScalarProperty Name="iIdPeriodoPago" ColumnName="iIdPeriodoPago" />
+                <ScalarProperty Name="cNombrePeriodo" ColumnName="cNombrePeriodo" />
+                <ScalarProperty Name="iDiasxPeriodo" ColumnName="iDiasxPeriodo" />
+                <ScalarProperty Name="dtCreacion" ColumnName="dtCreacion" />
+                <ScalarProperty Name="dtModificacion" ColumnName="dtModificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblTabuladorSueldo">
+            <EntityTypeMapping TypeName="BDNOMINA2019Model.tblTabuladorSueldo">
+              <MappingFragment StoreEntitySet="tblTabuladorSueldo">
+                <ScalarProperty Name="iIdTabuladorSueldo" ColumnName="iIdTabuladorSueldo" />
+                <ScalarProperty Name="iIdEmpleado" ColumnName="iIdEmpleado" />
+                <ScalarProperty Name="dSueldoDiario" ColumnName="dSueldoDiario" />
+                <ScalarProperty Name="lActivo" ColumnName="lActivo" />
+                <ScalarProperty Name="dtCreacion" ColumnName="dtCreacion" />
+                <ScalarProperty Name="dtModificacion" ColumnName="dtModificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="empleados_crud" FunctionName="BDNOMINA2019Model.Store.empleados_crud" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

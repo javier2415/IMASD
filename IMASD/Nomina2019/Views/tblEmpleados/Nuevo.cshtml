@@ -1,0 +1,66 @@
+﻿@model Nomina2019.Models.ViewModels.tblEmpleados
+@{
+    ViewBag.Title = "Nuevo";
+}
+
+<h2>Nuevo Empleado</h2>
+
+@using (Html.BeginForm("Nuevo", "tblEmpleados", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                @Html.Label("Nombre")
+                @Html.TextBoxFor(n => n.Padron.cNombre, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.Padron.cNombre, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Apellido Paterno")
+                @Html.TextBoxFor(n => n.Padron.cApellido1, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.Padron.cApellido1, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Apellido Materno")
+                @Html.TextBoxFor(n => n.Padron.cApellido2, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.Padron.cApellido2, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Dirección")
+                @Html.TextBoxFor(n => n.Padron.cDireccion, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.Padron.cDireccion, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Telefono")
+                @Html.TextBoxFor(n => n.Padron.cTelefono, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.Padron.cTelefono, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Departamento")
+                @Html.DropDownListFor(m => m.Departamento.iIdDepartamento, Model.lstDepartamentos, new { @class = "form-control" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Período De Pago")
+                @Html.DropDownListFor(m => m.PeriodoPago.iIdPeriodoPago, Model.lstPeriodosPago, new { @class = "form-control" })
+            </div>
+            <br />
+            <div>
+                @Html.Label("Sueldo Diario")
+                @Html.TextBoxFor(n => n.dSueldoDiario, "", new { @class = "form-control" })
+                @Html.ValidationMessageFor(n => n.dSueldoDiario, null, new { @class = "alertaroja" })
+            </div>
+            <br />
+            <div style="text-align:right">
+                <input value="Guardar" class="btn btn-primary" type="submit" />
+            </div>
+        </div>
+
+    </div>
+
+
+}
